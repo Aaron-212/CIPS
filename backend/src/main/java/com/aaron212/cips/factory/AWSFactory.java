@@ -3,13 +3,33 @@ package com.aaron212.cips.factory;
 import com.aaron212.cips.model.*;
 import com.aaron212.cips.model.aws.*;
 
+import java.util.Random;
+
 public class AWSFactory implements CloudInfrastructureFactory {
     @Override
     public ComputeInstance createCompute() {
-        return new EC2Instance();
+        EC2Instance instance = new EC2Instance();
+        instance.setVCpu(2);
+        instance.setVRam(4096);
+        instance.setVDisk(40960);
+        instance.setVBandwidth(1000);
+        instance.setVQuota(1000000);
+        instance.setDnsName(dnsNameMocker());
+        instance.setModelName("m8g.medium");
+        return instance;
     }
+
     @Override
     public CloudStorage createStorage() {
         return new S3Bucket();
+    }
+
+    static private String dnsNameMocker() {
+        Random rand = new Random();
+        return "ec2-" + rand.nextInt(256) +
+                "-" + rand.nextInt(256) +
+                "-" + rand.nextInt(256) +
+                "-" + rand.nextInt(256) +
+                ".compute-" + rand.nextInt(10) + ".exampleamazonaws.com";
     }
 }
