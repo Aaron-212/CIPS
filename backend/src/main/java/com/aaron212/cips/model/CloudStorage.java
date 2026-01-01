@@ -36,9 +36,7 @@ public abstract class CloudStorage {
             return;
         }
 
-        // Saturating add
-        long sum = (long) this.size + (long) size;
-        this.size = (int) max((long) Integer.MIN_VALUE, min(sum, (long) Integer.MAX_VALUE));
+        this.size = this.size + size;
     }
 
     public abstract String uploadFile(String filename);

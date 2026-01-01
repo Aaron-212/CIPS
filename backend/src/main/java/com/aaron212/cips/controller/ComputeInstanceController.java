@@ -49,7 +49,7 @@ public class ComputeInstanceController {
         computeInstance.start();
         computeInstanceRepository.save(computeInstance);
 
-        return ResponseEntity.ok(computeInstance);
+        return ResponseEntity.ok(computeInstance.getId());
     }
 
     @DeleteMapping("/destroy/{id}")
