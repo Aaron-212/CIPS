@@ -18,6 +18,10 @@ public abstract class CloudStorage {
     @Getter
     private Long id;
 
+    @Column(name = "provider", insertable = false, updatable = false)
+    @Getter
+    private String provider;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
