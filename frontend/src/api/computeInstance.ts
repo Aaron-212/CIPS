@@ -34,10 +34,9 @@ export const computeInstanceService = {
     },
 
     async create(provider: string) {
-        const state: ComputeInstanceCreate = {
-            provider: provider,
-        }
-        const response = await api.post(`/computeInstance/create`, state)
+        const response = await api.post(`/computeInstance/create`, null, {
+            params: { provider },
+        })
         return response.data
     },
 }

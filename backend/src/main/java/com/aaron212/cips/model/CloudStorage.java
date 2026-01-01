@@ -2,6 +2,7 @@ package com.aaron212.cips.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -32,6 +33,10 @@ public abstract class CloudStorage {
 
     @Getter
     private Integer size = 1000; // current size in MB, default to 1000
+
+    @Getter
+    @Setter
+    private String name;
 
     private BigDecimal hourlyCost;
 

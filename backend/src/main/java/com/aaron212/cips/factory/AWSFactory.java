@@ -21,7 +21,9 @@ public class AWSFactory implements CloudInfrastructureFactory {
 
     @Override
     public CloudStorage createStorage() {
-        return new S3Bucket();
+        S3Bucket bucket= new S3Bucket();
+        bucket.setName(bucketNameMocker());
+        return bucket;
     }
 
     static private String dnsNameMocker() {
@@ -31,5 +33,11 @@ public class AWSFactory implements CloudInfrastructureFactory {
                 "-" + rand.nextInt(256) +
                 "-" + rand.nextInt(256) +
                 ".compute-" + rand.nextInt(10) + ".exampleamazonaws.com";
+    }
+
+    static private String bucketNameMocker() {
+        Random rand = new Random();
+        String suffix = Long.toHexString(rand.nextLong() & Long.MAX_VALUE);
+        return "s3bucket-" + suffix;
     }
 }

@@ -2,6 +2,7 @@ import api from "./index"
 
 export interface CloudStorage {
     id: number
+    name: string
     provider: string
     size: number // MB
     createdAt: Date
@@ -25,6 +26,13 @@ export const cloudStorageService = {
 
     async summary() {
         const response = await api.get<CloudStorageSummary>("/cloudStorage/summary")
+        return response.data
+    },
+
+    async create(provider: string) {
+        const response = await api.post("/cloudStorage/create", null, {
+            params: { provider },
+        })
         return response.data
     },
 }

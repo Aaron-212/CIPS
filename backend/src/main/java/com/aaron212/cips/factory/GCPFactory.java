@@ -21,9 +21,10 @@ public class GCPFactory implements CloudInfrastructureFactory {
 
     @Override
     public CloudStorage createStorage() {
-        return new GCSBucket();
+        GCSBucket bucket= new GCSBucket();
+        bucket.setName(bucketNameMocker());
+        return bucket;
     }
-
     static private String dnsNameMocker() {
         Random rand = new Random();
         return "gce-" + rand.nextInt(256) +
@@ -31,5 +32,11 @@ public class GCPFactory implements CloudInfrastructureFactory {
                 "-" + rand.nextInt(256) +
                 "-" + rand.nextInt(256) +
                 ".c.example-googlecloudplatform.internal";
+    }
+
+    static private String bucketNameMocker() {
+        Random rand = new Random();
+        String suffix = Long.toHexString(rand.nextLong() & Long.MAX_VALUE);
+        return "gcsbucket-" + suffix;
     }
 }
