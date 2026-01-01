@@ -9,6 +9,16 @@ const router = createRouter({
             name: "Dashboard",
             component: Dashboard,
         },
+        {
+            path: "/computeInstance/:id",
+            name: "Compute Instance",
+            component: () => import("@/views/ComputeInstance.vue"),
+        },
+        {
+            path: "/cloudStorage/:id",
+            name: "Cloud Storage",
+            component: () => import("@/views/CloudStorage.vue"),
+        },
     ],
 })
 

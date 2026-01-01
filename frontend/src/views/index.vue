@@ -11,6 +11,7 @@ import { ref } from "vue"
 import api from "@/api/index"
 import { computeInstanceService } from "@/api/computeInstance"
 import { cloudStorageService } from "@/api/cloudStorage"
+import { RouterLink } from "vue-router"
 
 const { data: ciData, isFinished: ciIsFinished, execute: ciExecute } = useAxios("/computeInstance/fetch", api)
 const {
@@ -109,7 +110,9 @@ async function cloudStorageCreate(provider: string) {
                                     <Tag v-if="instance.state === 'RUNNING'" severity="success">Running</Tag>
                                     <Tag v-else-if="instance.state === 'STOPPED'" severity="danger">Stopped</Tag>
                                     <Tag v-else severity="warning">Unknown</Tag>
-                                    {{ instance.dnsName }}
+                                    <RouterLink :to="`/computeInstance/${instance.id}`">
+                                        {{ instance.dnsName }}
+                                    </RouterLink>
                                 </span>
                             </template>
                             <template #content>
@@ -155,7 +158,9 @@ async function cloudStorageCreate(provider: string) {
                     <span v-for="instance in csData" :key="instance.id" class="text-lg">
                         <Card>
                             <template #title>
-                                <span class="break-all">{{ instance.name }}</span>
+                                <RouterLink :to="`/cloudStorage/${instance.id}`">
+                                    {{ instance.name }}
+                                </RouterLink>
                             </template>
                             <template #content>
                                 <p>Provider: {{ instance.provider }}. Size: {{ instance.size }} MB.</p>
