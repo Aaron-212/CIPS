@@ -1,6 +1,7 @@
 package com.aaron212.cips.controller;
 
 import com.aaron212.cips.factory.AWSFactory;
+import com.aaron212.cips.factory.GCPFactory;
 import com.aaron212.cips.factory.CloudInfrastructureFactory;
 import com.aaron212.cips.model.ComputeInstance;
 import com.aaron212.cips.repository.ComputeInstanceRepository;
@@ -41,6 +42,8 @@ public class ComputeInstanceController {
 
         if (provider.equalsIgnoreCase("AWS")) {
             factory = new AWSFactory();
+        } else if (provider.equalsIgnoreCase("GCP")) {
+            factory = new GCPFactory();
         } else {
             return ResponseEntity.badRequest().body("Invalid Provider");
         }
