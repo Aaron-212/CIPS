@@ -5,6 +5,7 @@ import com.aaron212.cips.factory.GCPFactory;
 import com.aaron212.cips.factory.CloudInfrastructureFactory;
 import com.aaron212.cips.model.CloudStorage;
 import com.aaron212.cips.repository.CloudStorageRepository;
+import com.aaron212.cips.dto.CloudStorageSummaryDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,13 @@ public class CloudStorageController {
                 .orElseGet(() ->
                         ResponseEntity.notFound().build()
                 );
+    }
+
+    @GetMapping("/summary")
+    public CloudStorageSummaryDTO getCloudStorageSummary() {
+        long count = cloudStorageRepository.count();
+        Long totalSize = cloudStorageRepository.sumSize();
+        return new CloudStorageSummaryDTO(count, totalSize != null ? totalSize : 0L);
     }
 
     @PostMapping("/create")

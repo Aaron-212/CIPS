@@ -5,6 +5,7 @@ import com.aaron212.cips.factory.GCPFactory;
 import com.aaron212.cips.factory.CloudInfrastructureFactory;
 import com.aaron212.cips.model.ComputeInstance;
 import com.aaron212.cips.repository.ComputeInstanceRepository;
+import com.aaron212.cips.dto.ComputeInstanceSummaryDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,13 @@ public class ComputeInstanceController {
                 .orElseGet(() ->
                         ResponseEntity.notFound().build()
                 );
+    }
+
+    @GetMapping("/summary")
+    public ComputeInstanceSummaryDTO getComputeInstanceSummary() {
+        long activeCount = computeInstanceRepository.countByState(ComputeInstance.State.RUNNING);
+        long totalCount = computeInstanceRepository.count();
+        return new ComputeInstanceSummaryDTO(activeCount, totalCount);
     }
 
     @PostMapping("/create")

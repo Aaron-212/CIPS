@@ -5,6 +5,16 @@ export interface ComputeInstance {
     provider: string
     dnsName: string
     state: string
+    createdAt: Date
+}
+
+export interface ComputeInstanceSummary {
+    activeCount: number
+    totalCount: number
+}
+
+export interface ComputeInstanceCreate {
+    provider: string
 }
 
 export const computeInstanceService = {
@@ -15,6 +25,19 @@ export const computeInstanceService = {
 
     async getById(id: number) {
         const response = await api.get<ComputeInstance>(`/computeInstance/fetch/${id}`)
+        return response.data
+    },
+
+    async summary() {
+        const response = await api.get<ComputeInstanceSummary>(`/computeInstance/summary`)
+        return response.data
+    },
+
+    async create(provider: string) {
+        const state: ComputeInstanceCreate = {
+            provider: provider,
+        }
+        const response = await api.post(`/computeInstance/create`, state)
         return response.data
     },
 }

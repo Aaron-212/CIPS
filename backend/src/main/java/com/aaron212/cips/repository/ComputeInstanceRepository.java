@@ -4,4 +4,5 @@ import com.aaron212.cips.model.ComputeInstance;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ComputeInstanceRepository extends JpaRepository<ComputeInstance, Long> {
+    long countByState(ComputeInstance.State state);
 }
