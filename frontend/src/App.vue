@@ -19,7 +19,7 @@ import Button from "primevue/button"
                         @click="router.back()"
                     />
 
-                    <p>{{ route.name }}</p>
+                    <p class="text-xl font-semibold">{{ route.name }}</p>
                 </div>
             </template>
         </Menubar>
