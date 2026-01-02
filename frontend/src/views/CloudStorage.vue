@@ -9,6 +9,10 @@ import Panel from "primevue/panel"
 import Skeleton from "primevue/skeleton"
 import Message from "primevue/message"
 import InputNumber from "primevue/inputnumber"
+import Toast from "primevue/toast"
+import ConfirmDialog from "primevue/confirmdialog"
+import { useToast } from "primevue/usetoast"
+import { useConfirm } from "primevue/useconfirm"
 
 const route = useRoute()
 const router = useRouter()
@@ -20,6 +24,9 @@ const loading = ref(true)
 const error = ref<string | null>(null)
 const increaseAmount = ref(1000)
 
+const confirm = useConfirm()
+const toast = useToast()
+
 const fetchStorage = async () => {
     try {
         loading.value = true
@@ -29,9 +36,8 @@ const fetchStorage = async () => {
         ])
         storage.value = storageData
         cost.value = costData
-    } catch (err) {
-        console.error("Failed to fetch storage:", err)
-        error.value = "Failed to load cloud storage details."
+    } catch {
+        showFailureToast("Failed to load cloud storage")
     } finally {
         loading.value = false
     }
@@ -41,26 +47,56 @@ const increaseSize = async () => {
     try {
         await cloudStorageService.increaseSize(storageId, increaseAmount.value)
         await fetchStorage()
-    } catch (err) {
-        console.error("Failed to increase size:", err)
+        showSuccessToast(`Successfully increased storage size by ${increaseAmount.value} MB`)
+    } catch {
+        showFailureToast("Failed to increase storage size")
     }
 }
 
-const destroyStorage = async () => {
-    if (confirm("Are you sure you want to destroy this storage?")) {
-        try {
+const confirmDeleteStorage = () => {
+    confirm.require({
+        message: "Are you sure you want to delete this storage?",
+        header: "Delete Storage",
+        icon: "pi pi-exclamation-triangle",
+        rejectProps: {
+            label: "Cancel",
+            severity: "secondary",
+            outlined: true,
+        },
+        acceptProps: {
+            label: "Delete",
+            severity: "danger",
+            outlined: true,
+        },
+        accept: async () => {
             await cloudStorageService.destroy(storageId)
             router.push("/")
-        } catch (err) {
-            console.error("Failed to destroy storage:", err)
-        }
-    }
+        },
+    })
+}
+
+const showSuccessToast = (content: string) => {
+    toast.add({
+        severity: "success",
+        summary: content,
+        life: 3000,
+    })
+}
+
+const showFailureToast = (content: string) => {
+    toast.add({
+        severity: "danger",
+        summary: content,
+        life: 3000,
+    })
 }
 
 onMounted(fetchStorage)
 </script>
 
 <template>
+    <ConfirmDialog />
+    <Toast />
     <div class="max-w-4xl mx-auto px-10 py-8">
         <div v-if="storage" class="mb-6 flex items-center gap-4">
             <InputNumber v-model="increaseAmount" :min="1" suffix=" MB" class="basis-1/2" />
@@ -70,7 +106,7 @@ onMounted(fetchStorage)
                 label="Destroy"
                 severity="danger"
                 outlined
-                @click="destroyStorage"
+                @click="confirmDeleteStorage"
                 class="basis-1/4"
             />
         </div>

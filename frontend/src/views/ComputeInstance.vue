@@ -9,6 +9,10 @@ import Tag from "primevue/tag"
 import Panel from "primevue/panel"
 import Skeleton from "primevue/skeleton"
 import Message from "primevue/message"
+import ConfirmDialog from "primevue/confirmdialog"
+import Toast from "primevue/toast"
+import { useConfirm } from "primevue/useconfirm"
+import { useToast } from "primevue/usetoast"
 
 const route = useRoute()
 const router = useRouter()
@@ -19,6 +23,9 @@ const cost = ref<number | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 
+const confirm = useConfirm()
+const toast = useToast()
+
 const fetchInstance = async () => {
     try {
         loading.value = true
@@ -28,9 +35,8 @@ const fetchInstance = async () => {
         ])
         instance.value = instanceData
         cost.value = costData
-    } catch (err) {
-        console.error("Failed to fetch instance:", err)
-        error.value = "Failed to load compute instance details."
+    } catch {
+        showFailureToast("Failed to load instances.")
     } finally {
         loading.value = false
     }
@@ -40,8 +46,9 @@ const startInstance = async () => {
     try {
         await computeInstanceService.start(instanceId)
         await fetchInstance()
-    } catch (err) {
-        console.error("Failed to start instance:", err)
+        showSuccessToast("Instance started.")
+    } catch {
+        showFailureToast("Failed to start instance.")
     }
 }
 
@@ -49,33 +56,75 @@ const stopInstance = async () => {
     try {
         await computeInstanceService.stop(instanceId)
         await fetchInstance()
-    } catch (err) {
-        console.error("Failed to stop instance:", err)
+        showSuccessToast("Instance stopped.")
+    } catch {
+        showFailureToast("Failed to stop instance.")
     }
 }
 
-const destroyInstance = async () => {
-    if (confirm("Are you sure you want to destroy this instance?")) {
-        try {
+const confirmDeleteInstance = () => {
+    confirm.require({
+        message: "Are you sure you want to delete this instance?",
+        header: "Delete Instance",
+        icon: "pi pi-exclamation-triangle",
+        rejectProps: {
+            label: "Cancel",
+            severity: "secondary",
+            outlined: true,
+        },
+        acceptProps: {
+            label: "Delete",
+            severity: "danger",
+            outlined: true,
+        },
+        accept: async () => {
             await computeInstanceService.destroy(instanceId)
             router.push("/")
-        } catch (err) {
-            console.error("Failed to destroy instance:", err)
-        }
-    }
+        },
+    })
+}
+
+const showSuccessToast = (content: string) => {
+    toast.add({
+        severity: "success",
+        summary: content,
+        life: 3000,
+    })
+}
+
+const showFailureToast = (content: string) => {
+    toast.add({
+        severity: "danger",
+        summary: content,
+        life: 3000,
+    })
 }
 
 onMounted(fetchInstance)
 </script>
 
 <template>
+    <ConfirmDialog />
+    <Toast />
     <div class="max-w-4xl mx-auto px-10 py-8">
         <div v-if="instance" class="mb-6 flex items-center gap-4">
-            <Button v-if="instance.state === 'RUNNING'" icon="pi pi-stop" label="Stop" severity="contrast"
-                @click="stopInstance" class="grow" />
+            <Button
+                v-if="instance.state === 'RUNNING'"
+                icon="pi pi-stop"
+                label="Stop"
+                severity="contrast"
+                @click="stopInstance"
+                class="grow"
+            />
             <Button v-else icon="pi pi-play" label="Start" severity="primary" @click="startInstance" class="grow" />
-            <Button icon="pi pi-trash" label="Destroy" severity="danger" outlined @click="destroyInstance"
-                class="grow" />
+            <Button
+                icon="pi pi-trash"
+                label="Destroy"
+                severity="danger"
+                outlined
+                @click="confirmDeleteInstance"
+                class="grow"
+            />
         </div>
 
         <div v-if="loading">

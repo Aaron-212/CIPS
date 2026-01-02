@@ -5,13 +5,17 @@ import Card from "primevue/card"
 import Button from "primevue/button"
 import Tag from "primevue/tag"
 import Menu from "primevue/menu"
+import Toast from "primevue/toast"
 import { useAxios } from "@vueuse/integrations/useAxios"
 import { useDateFormat } from "@vueuse/core"
+import { useToast } from "primevue/usetoast"
 import { ref } from "vue"
 import api from "@/api/index"
 import { computeInstanceService } from "@/api/computeInstance"
 import { cloudStorageService } from "@/api/cloudStorage"
 import { RouterLink } from "vue-router"
+
+const toast = useToast()
 
 const { data: ciData, isFinished: ciIsFinished, execute: ciExecute } = useAxios("/computeInstance/fetch", api)
 const {
@@ -63,16 +67,27 @@ async function computeInstanceCreate(provider: string) {
     await computeInstanceService.create(provider)
     ciExecute()
     ciSummaryExecute()
+    showSuccessToast("Compute Instance created successfully")
 }
 
 async function cloudStorageCreate(provider: string) {
     await cloudStorageService.create(provider)
     csExecute()
     csSummaryExecute()
+    showSuccessToast("Cloud Storage created successfully")
+}
+
+const showSuccessToast = (content: string) => {
+    toast.add({
+        severity: "success",
+        summary: content,
+        life: 3000,
+    })
 }
 </script>
 
 <template>
+    <Toast />
     <div class="max-w-300 mx-auto px-10 py-8">
         <div class="grid grid-cols-2 gap-4 justify-between">
             <div class="grow flex flex-col gap-4">
