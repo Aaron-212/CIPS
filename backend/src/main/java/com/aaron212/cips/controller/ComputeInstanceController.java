@@ -83,4 +83,28 @@ public class ComputeInstanceController {
 
         return ResponseEntity.notFound().build();
     }
+
+    @PostMapping("/start/{id}")
+    public ResponseEntity<Object> startComputeInstance(@PathVariable Long id) {
+        Optional<ComputeInstance> instanceOpt = computeInstanceRepository.findById(id);
+        if (instanceOpt.isPresent()) {
+            ComputeInstance instance = instanceOpt.get();
+            instance.start();
+            computeInstanceRepository.save(instance);
+            return ResponseEntity.ok(id);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/stop/{id}")
+    public ResponseEntity<Object> stopComputeInstance(@PathVariable Long id) {
+        Optional<ComputeInstance> instanceOpt = computeInstanceRepository.findById(id);
+        if (instanceOpt.isPresent()) {
+            ComputeInstance instance = instanceOpt.get();
+            instance.stop();
+            computeInstanceRepository.save(instance);
+            return ResponseEntity.ok(id);
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

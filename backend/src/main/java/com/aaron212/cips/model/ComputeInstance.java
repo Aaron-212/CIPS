@@ -90,7 +90,8 @@ public abstract class ComputeInstance {
     }
 
     public final BigDecimal getTotalAccruedCost() {
-        if (createdAt == null || hourlyCost == null) return BigDecimal.ZERO;
+        if (createdAt == null) return BigDecimal.ZERO;
+        if (hourlyCost == null) calculateHourlyCost();
         long hours = ChronoUnit.HOURS.between(createdAt, LocalDateTime.now());
         long billableHours = Math.max(1, hours);
 

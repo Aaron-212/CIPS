@@ -35,4 +35,21 @@ export const cloudStorageService = {
         })
         return response.data
     },
+
+    async getCost(id: number) {
+        const response = await api.get<number>(`/cloudStorage/cost/${id}`)
+        return response.data
+    },
+
+    async increaseSize(id: number, size: number) {
+        const response = await api.post(`/cloudStorage/increase/${id}`, null, {
+            params: { size },
+        })
+        return response.data
+    },
+
+    async destroy(id: number) {
+        const response = await api.delete(`/cloudStorage/destroy/${id}`)
+        return response.data
+    },
 }

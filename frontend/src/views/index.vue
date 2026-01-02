@@ -110,7 +110,7 @@ async function cloudStorageCreate(provider: string) {
                                     <Tag v-if="instance.state === 'RUNNING'" severity="success">Running</Tag>
                                     <Tag v-else-if="instance.state === 'STOPPED'" severity="danger">Stopped</Tag>
                                     <Tag v-else severity="warning">Unknown</Tag>
-                                    <RouterLink :to="`/computeInstance/${instance.id}`">
+                                    <RouterLink :to="`/computeInstance/${instance.id}`" class="px-2 hover:underline">
                                         {{ instance.dnsName }}
                                     </RouterLink>
                                 </span>
@@ -158,7 +158,7 @@ async function cloudStorageCreate(provider: string) {
                     <span v-for="instance in csData" :key="instance.id" class="text-lg">
                         <Card>
                             <template #title>
-                                <RouterLink :to="`/cloudStorage/${instance.id}`">
+                                <RouterLink :to="`/cloudStorage/${instance.id}`" class="hover:underline">
                                     {{ instance.name }}
                                 </RouterLink>
                             </template>
